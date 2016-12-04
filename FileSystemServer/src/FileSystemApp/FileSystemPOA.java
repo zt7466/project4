@@ -18,6 +18,7 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		_methods.put("sayHello", new java.lang.Integer(0));
 		_methods.put("shutdown", new java.lang.Integer(1));
 		_methods.put("readFile", new java.lang.Integer(2));
+		_methods.put("hasFile", new java.lang.Integer(3));
 	}
 
 	/**
@@ -53,6 +54,17 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		{
 			String fileTitle = in.read_string();
 			System.out.println("starting to read file!!!!!!!! " + fileTitle);
+			String $result = null;
+			$result = this.readFile(fileTitle);
+			out = $rh.createReply();
+			out.write_string($result);
+			break;
+		}
+
+		case 3:
+		{
+			String fileTitle = in.read_string();
+			System.out.println("Looking for file: " + fileTitle);
 			String $result = null;
 			$result = this.readFile(fileTitle);
 			out = $rh.createReply();

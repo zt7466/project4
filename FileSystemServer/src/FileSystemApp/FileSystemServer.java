@@ -33,6 +33,15 @@ class FileSystemImpl extends FileSystemPOA
 	}
 
 	@Override
+	public boolean hasFile(String title)
+	{
+		System.out.print("GOT HERE");
+		boolean hasFile = true;
+
+		return hasFile;
+	}
+
+	@Override
 	public String readFile(String title)
 	{
 		try

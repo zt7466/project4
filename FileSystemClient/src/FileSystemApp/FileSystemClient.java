@@ -42,65 +42,19 @@ public class FileSystemClient
 			System.out.println("Obtained a handle on server object: " + fileSystemImpl);
 			System.out.println(fileSystemImpl.sayHello());
 
-			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("20kb.txt")));
-			for(int i = 0; i < RUN_NUMBER; i++)
-			{
-			Long startTime = System.nanoTime();
-			fileSystemImpl.readFile("test1.txt");
-			Long endTime = System.nanoTime();
-			System.out.println("Finished run: " + i);
+			System.out.println(fileSystemImpl.hasFile("test1.txt"));
 
-			writer.write((endTime - startTime)+ "\n");
-			}
-			writer.close();
-
-			writer = new BufferedWriter(new FileWriter(new File("40kb.txt")));
-			for(int i = 0; i < RUN_NUMBER; i++)
-			{
-			Long startTime = System.nanoTime();
-			fileSystemImpl.readFile("test2.txt");
-			Long endTime = System.nanoTime();
-			System.out.println("Finished run: " + i);
-
-			writer.write((endTime - startTime)+ "\n");
-			}
-			writer.close();
-
-			writer = new BufferedWriter(new FileWriter(new File("60kb.txt")));
-			for(int i = 0; i < RUN_NUMBER; i++)
-			{
-			Long startTime = System.nanoTime();
-			fileSystemImpl.readFile("test3.txt");
-			Long endTime = System.nanoTime();
-			System.out.println("Finished run: " + i);
-
-			writer.write((endTime - startTime)+ "\n");
-			}
-			writer.close();
-
-			writer = new BufferedWriter(new FileWriter(new File("80kb.txt")));
-			for(int i = 0; i < RUN_NUMBER; i++)
-			{
-			Long startTime = System.nanoTime();
-			fileSystemImpl.readFile("test4.txt");
-			Long endTime = System.nanoTime();
-			System.out.println("Finished run: " + i);
-
-			writer.write((endTime - startTime)+ "\n");
-			}
-			writer.close();
-
-			writer = new BufferedWriter(new FileWriter(new File("120kb.txt")));
-			for(int i = 0; i < RUN_NUMBER; i++)
-			{
-			Long startTime = System.nanoTime();
-			fileSystemImpl.readFile("test5.txt");
-			Long endTime = System.nanoTime();
-			System.out.println("Finished run: " + i);
-
-			writer.write((endTime - startTime)+ "\n");
-			}
-			writer.close();
+//			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("20kb.txt")));
+//			for(int i = 0; i < RUN_NUMBER; i++)
+//			{
+//			Long startTime = System.nanoTime();
+//			fileSystemImpl.readFile("test1.txt");
+//			Long endTime = System.nanoTime();
+//			System.out.println("Finished run: " + i);
+//
+//			writer.write((endTime - startTime)+ "\n");
+//			}
+//			writer.close();
 			// This is how we would shut down the server
 			//fileSystemImpl.shutdown();
 

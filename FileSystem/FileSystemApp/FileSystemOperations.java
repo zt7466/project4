@@ -24,4 +24,6 @@ public interface FileSystemOperations
 	 * make the server shut down
 	 */
 	void shutdown();
+
+	boolean hasFile(String title);
 }
