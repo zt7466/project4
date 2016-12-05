@@ -42,7 +42,7 @@ public class FileSystemClient
 			System.out.println("Obtained a handle on server object: " + fileSystemImpl);
 			System.out.println(fileSystemImpl.sayHello());
 
-			System.out.println(fileSystemImpl.hasFile("test1.txt"));
+			System.out.println(fileSystemImpl.hasFile("test9.txt"));
 
 //			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("20kb.txt")));
 //			for(int i = 0; i < RUN_NUMBER; i++)

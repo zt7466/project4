@@ -70,7 +70,8 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 		org.omg.CORBA.portable.InputStream $in = null;
 		try
 		{
-			org.omg.CORBA.portable.OutputStream $out = _request("sayHello", true);
+			org.omg.CORBA.portable.OutputStream $out = _request("hasFile", true);
+			$out.write_string(title);
 			$in = _invoke($out);
 			boolean $result = $in.read_boolean();
 			return $result;

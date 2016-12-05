@@ -37,6 +37,7 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		case 0: // FileSystemApp/FileSystem/sayHello
 		{
 			String $result = null;
+			System.out.println("Saying Hello");
 			$result = this.sayHello();
 			out = $rh.createReply();
 			out.write_string($result);
@@ -53,7 +54,7 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		case 2:
 		{
 			String fileTitle = in.read_string();
-			System.out.println("starting to read file!!!!!!!! " + fileTitle);
+			System.out.println("Starting to read file! " + fileTitle);
 			String $result = null;
 			$result = this.readFile(fileTitle);
 			out = $rh.createReply();
@@ -65,10 +66,10 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		{
 			String fileTitle = in.read_string();
 			System.out.println("Looking for file: " + fileTitle);
-			String $result = null;
-			$result = this.readFile(fileTitle);
+			boolean $result = false;
+			$result = this.hasFile(fileTitle);
 			out = $rh.createReply();
-			out.write_string($result);
+			out.write_boolean($result);
 			break;
 		}
 		default:

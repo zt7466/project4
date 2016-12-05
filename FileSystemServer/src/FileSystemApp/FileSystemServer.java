@@ -32,13 +32,14 @@ class FileSystemImpl extends FileSystemPOA
 		orb.shutdown(false);
 	}
 
+	/**
+	 * Returns if a given file exists on the server
+	 */
 	@Override
 	public boolean hasFile(String title)
 	{
-		System.out.print("GOT HERE");
-		boolean hasFile = true;
-
-		return hasFile;
+		File file = new File(title);
+		return file.exists();
 	}
 
 	@Override
