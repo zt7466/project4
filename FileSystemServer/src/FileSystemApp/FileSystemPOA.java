@@ -19,6 +19,7 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		_methods.put("shutdown", new java.lang.Integer(1));
 		_methods.put("readFile", new java.lang.Integer(2));
 		_methods.put("hasFile", new java.lang.Integer(3));
+		_methods.put("listFiles", new java.lang.Integer(4));
 	}
 
 	/**
@@ -70,6 +71,16 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 			$result = this.hasFile(fileTitle);
 			out = $rh.createReply();
 			out.write_boolean($result);
+			break;
+		}
+
+		case 4:
+		{
+			System.out.println("Listing the Files: ");
+			String $result = null;
+			$result = this.listFiles();
+			out = $rh.createReply();
+			out.write_string($result);
 			break;
 		}
 		default:

@@ -26,4 +26,6 @@ public interface FileSystemOperations
 	void shutdown();
 
 	boolean hasFile(String title);
+
+	public String listFiles();
 }

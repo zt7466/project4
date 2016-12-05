@@ -43,6 +43,22 @@ class FileSystemImpl extends FileSystemPOA
 	}
 
 	@Override
+	public String listFiles()
+	{
+			File directory = new File("directory");
+			StringBuffer contents = new StringBuffer("");
+
+			for(File file : directory.listFiles())
+			{
+				if(!file.getName().equals("config.txt"))
+				{
+					contents.append(file.getName() + "\n");
+				}
+			}
+			return contents.toString();
+	}
+
+	@Override
 	public String readFile(String title)
 	{
 		try
