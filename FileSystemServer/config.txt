@@ -1,0 +1,1 @@
+-ORBInitialHost clipper -ORBInitialPort 1050
