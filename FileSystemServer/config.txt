@@ -1,1 +1,7 @@
+<<<<<<< HEAD
 -ORBInitialHost clipper -ORBInitialPort 1050
+=======
+-ORBInitialHost clipper -ORBInitialPort 1050
+-ORBInitialHost Japan -ORBInitialPort 1050
+-ORBInitialHost virginia -ORBInitialPort 1050
+>>>>>>> master

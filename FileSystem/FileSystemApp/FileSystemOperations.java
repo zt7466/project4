@@ -43,14 +43,22 @@ public interface FileSystemOperations
 	 * @param title of file to open
 	 * @return true or false if the file was opened
 	 */
+<<<<<<< HEAD
 	public boolean openRead(String title , String userNum);
+=======
+	public boolean openRead(String title);
+>>>>>>> master
 
 	/**
 	 *opens a file to write
 	 * @param title of the file to open
 	 * @return t/f if the file was opened
 	 */
+<<<<<<< HEAD
 	public boolean openWrite(String title, String userNum);
+=======
+	public boolean openWrite(String title);
+>>>>>>> master
 
 	/**
 	 * reads a given record from a given file
@@ -58,7 +66,11 @@ public interface FileSystemOperations
 	 * @param recordNumber to pull from the file
 	 * @return the record pulled from the file
 	 */
+<<<<<<< HEAD
 	public String readRecord(String fileName, int recordNumber, String userNum);
+=======
+	public String readRecord(String fileName, int recordNumber);
+>>>>>>> master
 
 	/**
 	 * writes a given record to a line in the given file
@@ -66,13 +78,21 @@ public interface FileSystemOperations
 	 * @param recordNumber the place the record is to be placed
 	 * @param record the record to add
 	 */
+<<<<<<< HEAD
 	public String writeRecord(String fileName, int recordNumber, String record, String userNum);
+=======
+	public void writeRecord(String fileName, int recordNumber, String record);
+>>>>>>> master
 
 	/**
 	 * close a file weather it is opened to read or write
 	 * @param fileName
 	 */
+<<<<<<< HEAD
 	public boolean closeFile(String fileName, String userNum);
+=======
+	public void closeFile(String fileName);
+>>>>>>> master
 
 	/**
 	 * list of files currently opened to reading
@@ -84,6 +104,7 @@ public interface FileSystemOperations
 	 * Marks a file as dirty if it is opened to read when someone opens it to write
 	 * @param title to make dirty
 	 */
+<<<<<<< HEAD
 	boolean markDirty(String title);
 
 	/**
@@ -92,6 +113,9 @@ public interface FileSystemOperations
 	 * @return
 	 */
 	boolean checkWrite(String title);
+=======
+	void markDirty(String title);
+>>>>>>> master
 
 
 }

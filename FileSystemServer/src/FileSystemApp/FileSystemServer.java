@@ -4,10 +4,15 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+<<<<<<< HEAD
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+=======
+import java.io.FileWriter;
+import java.util.ArrayList;
+>>>>>>> master
 import java.util.Scanner;
 
 import org.omg.CORBA.ORB;
@@ -23,6 +28,7 @@ import org.omg.PortableServer.POAHelper;
 class FileSystemImpl extends FileSystemPOA
 {
 	private ORB orb;
+<<<<<<< HEAD
 	private ArrayList<String[]> openedReadFiles = new ArrayList<String[]>();
 	private ArrayList<String[]> openedWriteFiles = new ArrayList<String[]>();
 	private ArrayList<String[]> openedDirtyFiles = new ArrayList<String[]>();
@@ -31,6 +37,13 @@ class FileSystemImpl extends FileSystemPOA
 	private final int RECORDSIZE = 60;
 
 	private int userNum = 0;
+=======
+	private ArrayList<String> openedReadFiles = new ArrayList<String>();
+	private ArrayList<String> openedWriteFiles = new ArrayList<String>();
+	private ArrayList<String> openedDirtyFiles = new ArrayList<String>();
+
+	private final String FILEPATH = "directory";
+>>>>>>> master
 
 	public void setORB(ORB orb_val)
 	{
@@ -56,7 +69,11 @@ class FileSystemImpl extends FileSystemPOA
 	@Override
 	public boolean hasFile(String title)
 	{
+<<<<<<< HEAD
 		if(checkTitle(openedWriteFiles,title).size() != 0 || checkTitle(openedDirtyFiles,title).size()!= 0)
+=======
+		if(openedWriteFiles.contains(title))
+>>>>>>> master
 		{
 			return false;
 		}
@@ -64,7 +81,11 @@ class FileSystemImpl extends FileSystemPOA
 		return file.exists();
 	}
 
+	/**
+	 * TODO: This may work
+	 */
 	@Override
+<<<<<<< HEAD
 	public boolean openRead(String title , String userNum)
 	{
 		File file = new File(FILEPATH + '/' + title);
@@ -72,6 +93,13 @@ class FileSystemImpl extends FileSystemPOA
 		{
 			String[] stringarray = {title, userNum};
 			openedReadFiles.add(stringarray);
+=======
+	public boolean openRead(String title)
+	{
+		if(hasFile(title))
+		{
+			openedReadFiles.add(title);
+>>>>>>> master
 			return true;
 		}
 		else
@@ -88,8 +116,12 @@ class FileSystemImpl extends FileSystemPOA
 						FileWriter fileWriter = new FileWriter(new File(FILEPATH + '/' + title));
 						fileWriter.append(serverConnection.readFile(title));
 						fileWriter.close();
+<<<<<<< HEAD
 						String[] stringarray = {title, userNum};
 						openedReadFiles.add(stringarray);
+=======
+						openedReadFiles.add(title);
+>>>>>>> master
 						sc.close();
 						return true;
 					}
@@ -104,6 +136,7 @@ class FileSystemImpl extends FileSystemPOA
 		return false;
 	}
 
+<<<<<<< HEAD
 	@Override
 	public boolean checkWrite(String title)
 	{
@@ -117,6 +150,13 @@ class FileSystemImpl extends FileSystemPOA
 
 	@Override
 	public boolean openWrite(String title, String userNum)
+=======
+	/**
+	 * TODO FIX THIS
+	 */
+	@Override
+	public boolean openWrite(String title)
+>>>>>>> master
 	{
 		boolean foundFile = false;
 		if(hasFile(title))
@@ -125,6 +165,7 @@ class FileSystemImpl extends FileSystemPOA
 			{
 				Scanner sc = new Scanner(new File("config.txt"));
 				while (sc.hasNext())
+<<<<<<< HEAD
 				{
 					String[] array = sc.nextLine().split(" ");
 					FileSystem serverConnection = createConnection(array);
@@ -142,6 +183,15 @@ class FileSystemImpl extends FileSystemPOA
 					String[] array = sc.nextLine().split(" ");
 					FileSystem serverConnection = createConnection(array);
 					serverConnection.markDirty(title);
+=======
+				{
+					String[] array = sc.nextLine().split(" ");
+					FileSystem serverConnection = createConnection(array);
+					if(!serverConnection.openWrite(title))
+					{
+						return false;
+					}
+>>>>>>> master
 				}
 				sc2.close();
 			}
@@ -150,6 +200,7 @@ class FileSystemImpl extends FileSystemPOA
 				e.printStackTrace();
 			}
 		}
+<<<<<<< HEAD
 		else
 		{
 			try
@@ -175,10 +226,13 @@ class FileSystemImpl extends FileSystemPOA
 				e.printStackTrace();
 			}
 		}
+=======
+>>>>>>> master
 		return foundFile;
 	}
 
 	@Override
+<<<<<<< HEAD
 	public boolean markDirty(String title)
 	{
 		ArrayList<String> results = checkTitle(openedReadFiles,title);
@@ -195,12 +249,22 @@ class FileSystemImpl extends FileSystemPOA
 		else if(checkTitle(openedWriteFiles, title).size() != 0)
 		{
 
+=======
+	public void markDirty(String title)
+	{
+		if(openedReadFiles.contains(title))
+		{
+			System.out.println("Marking" + title + "dirty");
+			openedReadFiles.remove(title);
+			openedDirtyFiles.add(title);
+>>>>>>> master
 		}
 		else if(hasFile(title))
 		{
 			File file = new File(FILEPATH + '/' + title);
 			file.delete();
 		}
+<<<<<<< HEAD
 		return true;
 	}
 
@@ -237,12 +301,24 @@ class FileSystemImpl extends FileSystemPOA
 			}
 		}
 		return returnText;
+=======
+	}
+
+	/**
+	 * TODO: Need to know about file sizes
+	 */
+	@Override
+	public String readRecord(String fileName, int recordNumber)
+	{
+		return null;
+>>>>>>> master
 	}
 
 	/**
 	 * TODO: Need to know about files sizes
 	 */
 	@Override
+<<<<<<< HEAD
 	public String writeRecord(String fileName, int recordNumber, String record, String userNum)
 	{
 		ArrayList<String> a = checkTitle(openedReadFiles, fileName);
@@ -275,12 +351,18 @@ class FileSystemImpl extends FileSystemPOA
 			}
 		}
 		return null;
+=======
+	public void writeRecord(String fileName, int recordNumber, String record)
+	{
+
+>>>>>>> master
 	}
 
 	/**
 	 * Closes the file if open
 	 */
 	@Override
+<<<<<<< HEAD
 	public boolean closeFile(String fileName, String userNum)
 	{
 		boolean sendValue = false;
@@ -309,6 +391,24 @@ class FileSystemImpl extends FileSystemPOA
 			}
 		}
 		return sendValue;
+=======
+	public void closeFile(String fileName)
+	{
+		if(openedReadFiles.contains(fileName))
+		{
+			openedReadFiles.remove(fileName);
+		}
+		if(openedWriteFiles.contains(fileName))
+		{
+			openedReadFiles.remove(fileName);
+		}
+		if(openedDirtyFiles.contains(fileName))
+		{
+			File file = new File(FILEPATH + '/' + fileName);
+			file.delete();
+			openedDirtyFiles.remove(fileName);
+		}
+>>>>>>> master
 	}
 
 	@Override
@@ -331,6 +431,7 @@ class FileSystemImpl extends FileSystemPOA
 	public String listOpenFiles()
 	{
 		StringBuffer contents = new StringBuffer("");
+<<<<<<< HEAD
 		for(String[] fileName : openedReadFiles)
 		{
 			contents.append(fileName[0] + "\n");
@@ -342,6 +443,15 @@ class FileSystemImpl extends FileSystemPOA
 		for(String[] fileName : openedDirtyFiles)
 		{
 			contents.append(fileName[0]+ "\n");
+=======
+		for(String fileName : openedReadFiles)
+		{
+			contents.append(fileName + "\n");
+		}
+		for(String fileName : openedWriteFiles)
+		{
+			contents.append(fileName + "\n");
+>>>>>>> master
 		}
 		return contents.toString();
 	}
@@ -382,6 +492,7 @@ class FileSystemImpl extends FileSystemPOA
 	String name = "FileSystem";
 	return FileSystemHelper.narrow(ncRef.resolve_str(name));
 	}
+<<<<<<< HEAD
 
 	/**
 	 * Method for checking if a array list contains a filename
@@ -401,6 +512,8 @@ class FileSystemImpl extends FileSystemPOA
 		}
 		return array;
 	}
+=======
+>>>>>>> master
 }
 
 /**

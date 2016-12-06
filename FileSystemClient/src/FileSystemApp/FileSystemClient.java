@@ -42,11 +42,17 @@ public class FileSystemClient
 			System.out.println("Obtained a handle on server object: " + fileSystemImpl);
 			String userData = fileSystemImpl.sayHello();
 
+<<<<<<< HEAD
 //			System.out.println(fileSystemImpl.hasFile("test4.txt"));
 			fileSystemImpl.openWrite("test2.txt", userData);
 			System.out.println(fileSystemImpl.listOpenFiles());
 			System.out.println(fileSystemImpl.closeFile("test2.txt", userData));
 
+=======
+			System.out.println(fileSystemImpl.hasFile("test4.txt"));
+			//System.out.println(fileSystemImpl.listFiles());
+			//System.out.println(fileSystemImpl.openRead("test5.txt"));
+>>>>>>> master
 
 		} catch (Exception e)
 		{

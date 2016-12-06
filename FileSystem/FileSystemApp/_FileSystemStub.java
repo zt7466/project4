@@ -141,14 +141,21 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 	}
 
 	@Override
+<<<<<<< HEAD
 	public boolean openRead(String title, String userNum)
+=======
+	public boolean openRead(String title)
+>>>>>>> master
 	{
 		org.omg.CORBA.portable.InputStream $in = null;
 		try
 		{
 			org.omg.CORBA.portable.OutputStream $out = _request("openRead", true);
 			$out.write_string(title);
+<<<<<<< HEAD
 			$out.write_string(userNum);
+=======
+>>>>>>> master
 			$in = _invoke($out);
 			boolean $result = $in.read_boolean();
 			return $result;
@@ -159,7 +166,11 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 			throw new org.omg.CORBA.MARSHAL(_id);
 		} catch (org.omg.CORBA.portable.RemarshalException $rm)
 		{
+<<<<<<< HEAD
 			return openRead(title, userNum);
+=======
+			return openRead(title);
+>>>>>>> master
 		} finally
 		{
 			_releaseReply($in);
@@ -167,14 +178,21 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 	}
 
 	@Override
+<<<<<<< HEAD
 	public boolean openWrite(String title, String userNum)
+=======
+	public boolean openWrite(String title)
+>>>>>>> master
 	{
 		org.omg.CORBA.portable.InputStream $in = null;
 		try
 		{
 			org.omg.CORBA.portable.OutputStream $out = _request("openWrite", true);
 			$out.write_string(title);
+<<<<<<< HEAD
 			$out.write_string(userNum);
+=======
+>>>>>>> master
 			$in = _invoke($out);
 			boolean $result = $in.read_boolean();
 			return $result;
@@ -185,23 +203,38 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 			throw new org.omg.CORBA.MARSHAL(_id);
 		} catch (org.omg.CORBA.portable.RemarshalException $rm)
 		{
+<<<<<<< HEAD
 			return openWrite(title, userNum);
+=======
+			return openWrite(title);
+>>>>>>> master
 		} finally
 		{
 			_releaseReply($in);
 		}
 	}
 
+<<<<<<< HEAD
 	public boolean markDirty(String fileName)
+=======
+	public void markDirty(String fileName)
+>>>>>>> master
 	{
 		org.omg.CORBA.portable.InputStream $in = null;
 		try
 		{
+<<<<<<< HEAD
 			org.omg.CORBA.portable.OutputStream $out = _request("markDirty", true);
 			$out.write_string(fileName);
 			$in = _invoke($out);
 			boolean $result = $in.read_boolean();
 			return $result;
+=======
+			org.omg.CORBA.portable.OutputStream $out = _request("markDirty", false);
+			$out.write_string(fileName);
+			_invoke($out);
+
+>>>>>>> master
 		} catch (org.omg.CORBA.portable.ApplicationException $ex)
 		{
 			$in = $ex.getInputStream();
@@ -209,7 +242,11 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 			throw new org.omg.CORBA.MARSHAL(_id);
 		} catch (org.omg.CORBA.portable.RemarshalException $rm)
 		{
+<<<<<<< HEAD
 			return markDirty(fileName);
+=======
+			markDirty(fileName);
+>>>>>>> master
 		} finally
 		{
 			_releaseReply($in);
@@ -240,17 +277,28 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 		}
 	}
 
+<<<<<<< HEAD
 	public boolean closeFile(String fileName, String userNum)
+=======
+	public void closeFile(String fileName)
+>>>>>>> master
 	{
 		org.omg.CORBA.portable.InputStream $in = null;
 		try
 		{
+<<<<<<< HEAD
 			org.omg.CORBA.portable.OutputStream $out = _request("closeFile", true);
 			$out.write_string(fileName);
 			$out.write_string(userNum);
 			$in = _invoke($out);
 			boolean $result = $in.read_boolean();
 			return $result;
+=======
+			org.omg.CORBA.portable.OutputStream $out = _request("closeFile", false);
+			$out.write_string(fileName);
+			_invoke($out);
+
+>>>>>>> master
 		} catch (org.omg.CORBA.portable.ApplicationException $ex)
 		{
 			$in = $ex.getInputStream();
@@ -258,14 +306,22 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 			throw new org.omg.CORBA.MARSHAL(_id);
 		} catch (org.omg.CORBA.portable.RemarshalException $rm)
 		{
+<<<<<<< HEAD
 			 return closeFile(fileName, userNum);
+=======
+			 closeFile(fileName);
+>>>>>>> master
 		} finally
 		{
 			_releaseReply($in);
 		}
 	}
 
+<<<<<<< HEAD
 	public String readRecord(String fileName, int recordNumber, String userNum)
+=======
+	public String readRecord(String fileName, int recordNumber)
+>>>>>>> master
 	{
 		org.omg.CORBA.portable.InputStream $in = null;
 		try
@@ -273,7 +329,10 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 			org.omg.CORBA.portable.OutputStream $out = _request("readRecord", true);
 			$out.write_string(fileName);
 			$out.write_long(recordNumber);
+<<<<<<< HEAD
 			$out.write_string(userNum);
+=======
+>>>>>>> master
 			$in = _invoke($out);
 			String $result = $in.read_string();
 			return $result;
@@ -284,18 +343,27 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 			throw new org.omg.CORBA.MARSHAL(_id);
 		} catch (org.omg.CORBA.portable.RemarshalException $rm)
 		{
+<<<<<<< HEAD
 			return readRecord(fileName, recordNumber, userNum);
+=======
+			return readRecord(fileName, recordNumber);
+>>>>>>> master
 		} finally
 		{
 			_releaseReply($in);
 		}
 	}
 
+<<<<<<< HEAD
 	public String writeRecord(String fileName, int recordNumber, String record, String userNum)
+=======
+	public void writeRecord(String fileName, int recordNumber, String record)
+>>>>>>> master
 	{
 		org.omg.CORBA.portable.InputStream $in = null;
 		try
 		{
+<<<<<<< HEAD
 			org.omg.CORBA.portable.OutputStream $out = _request("writeRecord", true);
 			$out.write_string(fileName);
 			$out.write_long(recordNumber);
@@ -304,6 +372,13 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 			$in = _invoke($out);
 			String $result = $in.read_string();
 			return $result;
+=======
+			org.omg.CORBA.portable.OutputStream $out = _request("writeRecord", false);
+			$out.write_string(fileName);
+			$out.write_long(recordNumber);
+			$out.write_string(record);
+			_invoke($out);
+>>>>>>> master
 
 		} catch (org.omg.CORBA.portable.ApplicationException $ex)
 		{
@@ -312,7 +387,11 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 			throw new org.omg.CORBA.MARSHAL(_id);
 		} catch (org.omg.CORBA.portable.RemarshalException $rm)
 		{
+<<<<<<< HEAD
 			return writeRecord(fileName, recordNumber, record, userNum);
+=======
+			writeRecord(fileName, recordNumber, record);
+>>>>>>> master
 		} finally
 		{
 			_releaseReply($in);

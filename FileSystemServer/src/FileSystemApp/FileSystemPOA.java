@@ -27,7 +27,10 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		_methods.put("openWrite", new java.lang.Integer(9));
 		_methods.put("writeRecord", new java.lang.Integer(10));
 		_methods.put("markDirty", new java.lang.Integer(11));
+<<<<<<< HEAD
 		_methods.put("checkWrite", new java.lang.Integer(12));
+=======
+>>>>>>> master
 	}
 
 	/**
@@ -75,7 +78,11 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		}
 
 		/**
+<<<<<<< HEAD
 		 * Case for if the server has a file
+=======
+		 * Case for if the file has a file
+>>>>>>> master
 		 */
 		case 3:
 		{
@@ -107,10 +114,16 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		case 5:
 		{
 			String fileTitle = in.read_string();
+<<<<<<< HEAD
 			String userNum = in.read_string();
 			System.out.println("Reading for file: " + fileTitle);
 			boolean $result = false;
 			$result = this.openRead(fileTitle,userNum);
+=======
+			System.out.println("Reading for file: " + fileTitle);
+			boolean $result = false;
+			$result = this.openRead(fileTitle);
+>>>>>>> master
 			out = $rh.createReply();
 			out.write_boolean($result);
 			break;
@@ -123,10 +136,16 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		{
 			String fileTitle = in.read_string();
 			int fileNumber = in.read_long();
+<<<<<<< HEAD
 			String userNum = in.read_string();
 			System.out.println("reading record number: " + fileNumber +  " in file " +  fileTitle);
 			String $result = null;
 			$result = this.readRecord(fileTitle, fileNumber, userNum);
+=======
+			System.out.println("reading record number: " + fileNumber +  "in file" +  fileTitle);
+			String $result = null;
+			$result = this.readRecord(fileTitle, fileNumber);
+>>>>>>> master
 			out = $rh.createReply();
 			out.write_string($result);
 			break;
@@ -138,11 +157,16 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		case 7:
 		{
 			String fileTitle = in.read_string();
+<<<<<<< HEAD
 			String userNum = in.read_string();
 			System.out.println("Closing File:" +  fileTitle);
 			boolean $result = this.closeFile(fileTitle,userNum);
 			out = $rh.createReply();
 			out.write_boolean($result);
+=======
+			System.out.println("Closing File:" +  fileTitle);
+			this.closeFile(fileTitle);
+>>>>>>> master
 			break;
 		}
 
@@ -165,39 +189,59 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		case 9:
 		{
 			String fileTitle = in.read_string();
+<<<<<<< HEAD
 			String userNum = in.read_string();
 			System.out.println("Opening file: " + fileTitle + " for write");
 			boolean $result = false;
 			$result = this.openWrite(fileTitle,userNum);
+=======
+			System.out.println("Writing for file: " + fileTitle);
+			boolean $result = false;
+			$result = this.openWrite(fileTitle);
+>>>>>>> master
 			out = $rh.createReply();
 			out.write_boolean($result);
 			break;
 		}
 
 		/**
+<<<<<<< HEAD
 		 * Case to handle writing a record
+=======
+		 * Case to handle reading a record
+>>>>>>> master
 		 */
 		case 10:
 		{
 			String fileTitle = in.read_string();
 			int fileNumber = in.read_long();
 			String record = in.read_string();
+<<<<<<< HEAD
 			String userNum = in.read_string();
 			System.out.println("reading record number: " + fileNumber +  "in file" +  fileTitle);
 			String $result = null;
 			$result = this.writeRecord(fileTitle, fileNumber, record, userNum);
 			out = $rh.createReply();
 			out.write_string($result);
+=======
+			System.out.println("reading record number: " + fileNumber +  "in file" +  fileTitle);
+			this.writeRecord(fileTitle, fileNumber, record);
+>>>>>>> master
 			break;
 		}
 
 		/**
+<<<<<<< HEAD
 		 * Case to mark a file is dirty
+=======
+		 * Case to handle closing a record
+>>>>>>> master
 		 */
 		case 11:
 		{
 			String fileTitle = in.read_string();
 			System.out.println("Checking File is open:" + fileTitle);
+<<<<<<< HEAD
 			boolean $result = false;
 			$result = this.markDirty(fileTitle);;
 			out = $rh.createReply();
@@ -218,6 +262,12 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 			out.write_boolean($result);
 			break;
 		}
+=======
+			this.markDirty(fileTitle);
+			break;
+		}
+
+>>>>>>> master
 		default:
 			throw new org.omg.CORBA.BAD_OPERATION(0, org.omg.CORBA.CompletionStatus.COMPLETED_MAYBE);
 		}
