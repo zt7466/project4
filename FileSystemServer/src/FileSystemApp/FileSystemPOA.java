@@ -20,6 +20,13 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		_methods.put("readFile", new java.lang.Integer(2));
 		_methods.put("hasFile", new java.lang.Integer(3));
 		_methods.put("listFiles", new java.lang.Integer(4));
+		_methods.put("openRead", new java.lang.Integer(5));
+		_methods.put("readRecord", new java.lang.Integer(6));
+		_methods.put("closeFile", new java.lang.Integer(7));
+		_methods.put("listOpenFiles", new java.lang.Integer(8));
+		_methods.put("openWrite", new java.lang.Integer(9));
+		_methods.put("writeRecord", new java.lang.Integer(10));
+		_methods.put("markDirty", new java.lang.Integer(11));
 	}
 
 	/**
@@ -52,6 +59,9 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 			break;
 		}
 
+		/**
+		 * case for reading in a contents of a file
+		 */
 		case 2:
 		{
 			String fileTitle = in.read_string();
@@ -63,6 +73,9 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 			break;
 		}
 
+		/**
+		 * Case for if the file has a file
+		 */
 		case 3:
 		{
 			String fileTitle = in.read_string();
@@ -74,6 +87,9 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 			break;
 		}
 
+		/**
+		 * Case for listing all the files
+		 */
 		case 4:
 		{
 			System.out.println("Listing the Files: ");
@@ -83,6 +99,98 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 			out.write_string($result);
 			break;
 		}
+
+		/**
+		 * case for opening a file to read
+		 */
+		case 5:
+		{
+			String fileTitle = in.read_string();
+			System.out.println("Reading for file: " + fileTitle);
+			boolean $result = false;
+			$result = this.openRead(fileTitle);
+			out = $rh.createReply();
+			out.write_boolean($result);
+			break;
+		}
+
+		/**
+		 * Case to handle reading a record
+		 */
+		case 6:
+		{
+			String fileTitle = in.read_string();
+			int fileNumber = in.read_long();
+			System.out.println("reading record number: " + fileNumber +  "in file" +  fileTitle);
+			String $result = null;
+			$result = this.readRecord(fileTitle, fileNumber);
+			out = $rh.createReply();
+			out.write_string($result);
+			break;
+		}
+
+		/**
+		 * Case to handle closing a record
+		 */
+		case 7:
+		{
+			String fileTitle = in.read_string();
+			System.out.println("Closing File:" +  fileTitle);
+			this.closeFile(fileTitle);
+			break;
+		}
+
+		/**
+		 * Case for listing all the files
+		 */
+		case 8:
+		{
+			System.out.println("Listing the Open Files: ");
+			String $result = null;
+			$result = this.listOpenFiles();
+			out = $rh.createReply();
+			out.write_string($result);
+			break;
+		}
+
+		/**
+		 * case for opening a file to write
+		 */
+		case 9:
+		{
+			String fileTitle = in.read_string();
+			System.out.println("Writing for file: " + fileTitle);
+			boolean $result = false;
+			$result = this.openWrite(fileTitle);
+			out = $rh.createReply();
+			out.write_boolean($result);
+			break;
+		}
+
+		/**
+		 * Case to handle reading a record
+		 */
+		case 10:
+		{
+			String fileTitle = in.read_string();
+			int fileNumber = in.read_long();
+			String record = in.read_string();
+			System.out.println("reading record number: " + fileNumber +  "in file" +  fileTitle);
+			this.writeRecord(fileTitle, fileNumber, record);
+			break;
+		}
+
+		/**
+		 * Case to handle closing a record
+		 */
+		case 11:
+		{
+			String fileTitle = in.read_string();
+			System.out.println("Checking File is open:" + fileTitle);
+			this.markDirty(fileTitle);
+			break;
+		}
+
 		default:
 			throw new org.omg.CORBA.BAD_OPERATION(0, org.omg.CORBA.CompletionStatus.COMPLETED_MAYBE);
 		}
