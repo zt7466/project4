@@ -65,6 +65,7 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 		}
 	}
 
+
 	public boolean hasFile(String title)
 	{
 		org.omg.CORBA.portable.InputStream $in = null;
@@ -90,6 +91,32 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 	}
 
 	@Override
+	public boolean checkWrite(String title)
+	{
+		org.omg.CORBA.portable.InputStream $in = null;
+		try
+		{
+			org.omg.CORBA.portable.OutputStream $out = _request("checkWrite", true);
+			$out.write_string(title);
+			$in = _invoke($out);
+			boolean $result = $in.read_boolean();
+			return $result;
+		} catch (org.omg.CORBA.portable.ApplicationException $ex)
+		{
+			$in = $ex.getInputStream();
+			String _id = $ex.getId();
+			throw new org.omg.CORBA.MARSHAL(_id);
+		} catch (org.omg.CORBA.portable.RemarshalException $rm)
+		{
+			return checkWrite(title);
+		} finally
+		{
+			_releaseReply($in);
+		}
+	}
+
+
+	@Override
 	public String listFiles()
 	{
 		org.omg.CORBA.portable.InputStream $in = null;
@@ -112,6 +139,186 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 			_releaseReply($in);
 		}
 	}
+
+	@Override
+	public boolean openRead(String title, String userNum)
+	{
+		org.omg.CORBA.portable.InputStream $in = null;
+		try
+		{
+			org.omg.CORBA.portable.OutputStream $out = _request("openRead", true);
+			$out.write_string(title);
+			$out.write_string(userNum);
+			$in = _invoke($out);
+			boolean $result = $in.read_boolean();
+			return $result;
+		} catch (org.omg.CORBA.portable.ApplicationException $ex)
+		{
+			$in = $ex.getInputStream();
+			String _id = $ex.getId();
+			throw new org.omg.CORBA.MARSHAL(_id);
+		} catch (org.omg.CORBA.portable.RemarshalException $rm)
+		{
+			return openRead(title, userNum);
+		} finally
+		{
+			_releaseReply($in);
+		}
+	}
+
+	@Override
+	public boolean openWrite(String title, String userNum)
+	{
+		org.omg.CORBA.portable.InputStream $in = null;
+		try
+		{
+			org.omg.CORBA.portable.OutputStream $out = _request("openWrite", true);
+			$out.write_string(title);
+			$out.write_string(userNum);
+			$in = _invoke($out);
+			boolean $result = $in.read_boolean();
+			return $result;
+		} catch (org.omg.CORBA.portable.ApplicationException $ex)
+		{
+			$in = $ex.getInputStream();
+			String _id = $ex.getId();
+			throw new org.omg.CORBA.MARSHAL(_id);
+		} catch (org.omg.CORBA.portable.RemarshalException $rm)
+		{
+			return openWrite(title, userNum);
+		} finally
+		{
+			_releaseReply($in);
+		}
+	}
+
+	public boolean markDirty(String fileName)
+	{
+		org.omg.CORBA.portable.InputStream $in = null;
+		try
+		{
+			org.omg.CORBA.portable.OutputStream $out = _request("markDirty", true);
+			$out.write_string(fileName);
+			$in = _invoke($out);
+			boolean $result = $in.read_boolean();
+			return $result;
+		} catch (org.omg.CORBA.portable.ApplicationException $ex)
+		{
+			$in = $ex.getInputStream();
+			String _id = $ex.getId();
+			throw new org.omg.CORBA.MARSHAL(_id);
+		} catch (org.omg.CORBA.portable.RemarshalException $rm)
+		{
+			return markDirty(fileName);
+		} finally
+		{
+			_releaseReply($in);
+		}
+	}
+
+	@Override
+	public String listOpenFiles()
+	{
+		org.omg.CORBA.portable.InputStream $in = null;
+		try
+		{
+			org.omg.CORBA.portable.OutputStream $out = _request("listOpenFiles", true);
+			$in = _invoke($out);
+			String $result = $in.read_string();
+			return $result;
+		} catch (org.omg.CORBA.portable.ApplicationException $ex)
+		{
+			$in = $ex.getInputStream();
+			String _id = $ex.getId();
+			throw new org.omg.CORBA.MARSHAL(_id);
+		} catch (org.omg.CORBA.portable.RemarshalException $rm)
+		{
+			return listOpenFiles();
+		} finally
+		{
+			_releaseReply($in);
+		}
+	}
+
+	public boolean closeFile(String fileName, String userNum)
+	{
+		org.omg.CORBA.portable.InputStream $in = null;
+		try
+		{
+			org.omg.CORBA.portable.OutputStream $out = _request("closeFile", true);
+			$out.write_string(fileName);
+			$out.write_string(userNum);
+			$in = _invoke($out);
+			boolean $result = $in.read_boolean();
+			return $result;
+		} catch (org.omg.CORBA.portable.ApplicationException $ex)
+		{
+			$in = $ex.getInputStream();
+			String _id = $ex.getId();
+			throw new org.omg.CORBA.MARSHAL(_id);
+		} catch (org.omg.CORBA.portable.RemarshalException $rm)
+		{
+			 return closeFile(fileName, userNum);
+		} finally
+		{
+			_releaseReply($in);
+		}
+	}
+
+	public String readRecord(String fileName, int recordNumber, String userNum)
+	{
+		org.omg.CORBA.portable.InputStream $in = null;
+		try
+		{
+			org.omg.CORBA.portable.OutputStream $out = _request("readRecord", true);
+			$out.write_string(fileName);
+			$out.write_long(recordNumber);
+			$out.write_string(userNum);
+			$in = _invoke($out);
+			String $result = $in.read_string();
+			return $result;
+		} catch (org.omg.CORBA.portable.ApplicationException $ex)
+		{
+			$in = $ex.getInputStream();
+			String _id = $ex.getId();
+			throw new org.omg.CORBA.MARSHAL(_id);
+		} catch (org.omg.CORBA.portable.RemarshalException $rm)
+		{
+			return readRecord(fileName, recordNumber, userNum);
+		} finally
+		{
+			_releaseReply($in);
+		}
+	}
+
+	public String writeRecord(String fileName, int recordNumber, String record, String userNum)
+	{
+		org.omg.CORBA.portable.InputStream $in = null;
+		try
+		{
+			org.omg.CORBA.portable.OutputStream $out = _request("writeRecord", true);
+			$out.write_string(fileName);
+			$out.write_long(recordNumber);
+			$out.write_string(record);
+			$out.write_string(userNum);
+			$in = _invoke($out);
+			String $result = $in.read_string();
+			return $result;
+
+		} catch (org.omg.CORBA.portable.ApplicationException $ex)
+		{
+			$in = $ex.getInputStream();
+			String _id = $ex.getId();
+			throw new org.omg.CORBA.MARSHAL(_id);
+		} catch (org.omg.CORBA.portable.RemarshalException $rm)
+		{
+			return writeRecord(fileName, recordNumber, record, userNum);
+		} finally
+		{
+			_releaseReply($in);
+		}
+	}
+
 
 	/**
 	 * @see FileSystemApp.FileSystemOperations#shutdown()

@@ -40,25 +40,13 @@ public class FileSystemClient
 			fileSystemImpl = FileSystemHelper.narrow(ncRef.resolve_str(name));
 
 			System.out.println("Obtained a handle on server object: " + fileSystemImpl);
-			System.out.println(fileSystemImpl.sayHello());
+			String userData = fileSystemImpl.sayHello();
 
-			//System.out.println(fileSystemImpl.hasFile("test9.txt"));
-			System.out.println(fileSystemImpl.listFiles());
+//			System.out.println(fileSystemImpl.hasFile("test4.txt"));
+			fileSystemImpl.openWrite("test2.txt", userData);
+			System.out.println(fileSystemImpl.listOpenFiles());
+			System.out.println(fileSystemImpl.closeFile("test2.txt", userData));
 
-
-//			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("20kb.txt")));
-//			for(int i = 0; i < RUN_NUMBER; i++)
-//			{
-//			Long startTime = System.nanoTime();
-//			fileSystemImpl.readFile("test1.txt");
-//			Long endTime = System.nanoTime();
-//			System.out.println("Finished run: " + i);
-//
-//			writer.write((endTime - startTime)+ "\n");
-//			}
-//			writer.close();
-			// This is how we would shut down the server
-			//fileSystemImpl.shutdown();
 
 		} catch (Exception e)
 		{
