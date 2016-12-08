@@ -44,14 +44,11 @@ public class FileSystemClient
 
 //			System.out.println(fileSystemImpl.hasFile("test4.txt"));
 			fileSystemImpl.openWrite("test2.txt", userData);
-			System.out.println(fileSystemImpl.listOpenFiles());
+			System.out.println(fileSystemImpl.writeRecord("test2.txt", 3, "abcde12345", userData));
+			System.out.println(fileSystemImpl.readRecord("test2.txt", 3, userData));
 			System.out.println(fileSystemImpl.closeFile("test2.txt", userData));
 
-=======
-			System.out.println(fileSystemImpl.hasFile("test4.txt"));
-			//System.out.println(fileSystemImpl.listFiles());
-			//System.out.println(fileSystemImpl.openRead("test5.txt"));
->>>>>>> master
+
 
 		} catch (Exception e)
 		{

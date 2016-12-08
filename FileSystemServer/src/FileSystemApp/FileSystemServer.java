@@ -3,6 +3,7 @@ package FileSystemApp;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -64,9 +65,7 @@ class FileSystemImpl extends FileSystemPOA
 		return file.exists();
 	}
 
-	/**
-	 * TODO: This may work
-	 */
+
 	@Override
 	public boolean openRead(String title , String userNum)
 	{
@@ -140,9 +139,9 @@ class FileSystemImpl extends FileSystemPOA
 				String[] stringarray = {title, userNum};
 				openedWriteFiles.add(stringarray);
 				Scanner sc2 = new Scanner(new File("config.txt"));
-				while (sc.hasNext())
+				while (sc2.hasNext())
 				{
-					String[] array = sc.nextLine().split(" ");
+					String[] array = sc2.nextLine().split(" ");
 					FileSystem serverConnection = createConnection(array);
 					serverConnection.markDirty(title);
 				}
@@ -213,9 +212,11 @@ class FileSystemImpl extends FileSystemPOA
 		String returnText = "File not open to read";
 		ArrayList<String> a = checkTitle(openedReadFiles, fileName);
 		ArrayList<String> b = checkTitle(openedDirtyFiles, fileName);
-		if(a.size() != 0||b.size() != 0)
+		ArrayList<String> c = checkTitle(openedWriteFiles, fileName);
+		if(a.size() != 0||b.size() != 0 || c.size() != 0)
 		{
 			a.addAll(b);
+			a.addAll(c);
 			for(int i = 0; i < a.size(); i++)
 			{
 				if(a.get(i).equals(userNum))
@@ -223,13 +224,13 @@ class FileSystemImpl extends FileSystemPOA
 					try
 					{
 						BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(FILEPATH + '/' + fileName)));
-						bufferedReader.skip(RECORDSIZE * recordNumber - 1);
-						String s = "";
-						while(s.length() < RECORDSIZE)
+
+						for(int j = 0; j < recordNumber; j++)
 						{
-							s = s + bufferedReader.readLine();
+							bufferedReader.readLine();
 						}
-						returnText = s.substring(0, RECORDSIZE);
+						returnText = bufferedReader.readLine().substring(0, RECORDSIZE);
+
 						bufferedReader.close();
 					}
 					catch (Exception e)
@@ -242,13 +243,11 @@ class FileSystemImpl extends FileSystemPOA
 		return returnText;
 	}
 
-	/**
-	 * TODO: Need to know about files sizes
-	 */
 	@Override
 	public String writeRecord(String fileName, int recordNumber, String record, String userNum)
 	{
-		ArrayList<String> a = checkTitle(openedReadFiles, fileName);
+		String outputText = "Record not written to file";
+		ArrayList<String> a = checkTitle(openedWriteFiles, fileName);
 		if(a.size()!= 0)
 		{
 			for(int i = 0; i < a.size(); i++)
@@ -257,18 +256,38 @@ class FileSystemImpl extends FileSystemPOA
 				{
 					try
 					{
-						BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(FILEPATH + '/' + fileName)));
-						bufferedReader.skip(RECORDSIZE * recordNumber - 1);
+						Scanner sc = new Scanner(new File(FILEPATH + '/' + fileName));
+						BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(FILEPATH + '/' +"newFile")));
 
-						BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(FILEPATH + '/' + fileName)));
-
-						String s = "";
-						while(s.length() < RECORDSIZE)
+						for(int j = 0; j < recordNumber; j++)
 						{
-							s = s + bufferedReader.readLine();
+							bufferedWriter.write(sc.nextLine()+ '\n');
+						}
+						if(record.length() > RECORDSIZE)
+						{
+							record = record.substring(0, RECORDSIZE);
+						}
+						else
+						{
+							while(record.length() < RECORDSIZE)
+							{
+								record = record + "~";
+							}
 						}
 
-						bufferedReader.close();
+						bufferedWriter.write(record+ '\n');
+						sc.nextLine();
+						while(sc.hasNext())
+						{
+							bufferedWriter.write(sc.nextLine()+ '\n');
+						}
+						outputText = "Record Written to File";
+						sc.close();
+						bufferedWriter.close();
+
+						File f1 = new File(FILEPATH + '/' +"newFile");
+						f1.renameTo(new File(FILEPATH + '/' + fileName));
+						f1.delete();
 					}
 					catch (Exception e)
 					{
@@ -277,7 +296,7 @@ class FileSystemImpl extends FileSystemPOA
 				}
 			}
 		}
-		return null;
+		return outputText;
 	}
 
 	/**
