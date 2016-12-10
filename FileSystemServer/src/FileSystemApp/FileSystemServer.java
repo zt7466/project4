@@ -3,6 +3,7 @@ package FileSystemApp;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -64,14 +65,11 @@ class FileSystemImpl extends FileSystemPOA
 		return file.exists();
 	}
 
-	/**
-	 * TODO: This may work
-	 */
+
 	@Override
 	public boolean openRead(String title , String userNum)
 	{
-		File file = new File(FILEPATH + '/' + title);
-		if(file.exists())
+		if(hasFile(title))
 		{
 			String[] stringarray = {title, userNum};
 			openedReadFiles.add(stringarray);
@@ -79,13 +77,22 @@ class FileSystemImpl extends FileSystemPOA
 		}
 		else
 		{
+			Scanner sc = null;
 			try
 			{
-				Scanner sc = new Scanner(new File("config.txt"));
-				while (sc.hasNext())
-				{
-					String[] array = sc.nextLine().split(" ");
-					FileSystem serverConnection = createConnection(array);
+				sc = new Scanner(new File("config.txt"));
+			}
+			catch (FileNotFoundException e1)
+			{
+			}
+
+			while (sc.hasNext())
+			{
+				String[] array = sc.nextLine().split(" ");
+				FileSystem serverConnection;
+				try {
+					serverConnection = createConnection(array);
+
 					if(serverConnection.hasFile(title))
 					{
 						FileWriter fileWriter = new FileWriter(new File(FILEPATH + '/' + title));
@@ -97,12 +104,12 @@ class FileSystemImpl extends FileSystemPOA
 						return true;
 					}
 				}
-				sc.close();
+				catch (Exception e)
+				{
+					System.out.println("Could not find server: " + array[1]);
+				}
 			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			sc.close();
 		}
 		return false;
 	}
@@ -121,47 +128,74 @@ class FileSystemImpl extends FileSystemPOA
 	@Override
 	public boolean openWrite(String title, String userNum)
 	{
-		boolean foundFile = false;
 		if(hasFile(title))
 		{
+			Scanner sc = null;
 			try
 			{
-				Scanner sc = new Scanner(new File("config.txt"));
-				while (sc.hasNext())
-				{
-					String[] array = sc.nextLine().split(" ");
-					FileSystem serverConnection = createConnection(array);
+				sc = new Scanner(new File("config.txt"));
+			}
+			catch (FileNotFoundException e)
+			{
+			}
+
+			while (sc.hasNext())
+			{
+				String[] array = sc.nextLine().split(" ");
+				FileSystem serverConnection = null;
+				try {
+					serverConnection = createConnection(array);
+
 					if(!serverConnection.checkWrite(title))
 					{
 						return false;
 					}
 				}
-				sc.close();
-				String[] stringarray = {title, userNum};
-				openedWriteFiles.add(stringarray);
-				Scanner sc2 = new Scanner(new File("config.txt"));
-				while (sc.hasNext())
+				catch (Exception e)
 				{
-					String[] array = sc.nextLine().split(" ");
+				}
+			}
+			sc.close();
+			String[] stringarray = {title, userNum};
+			openedWriteFiles.add(stringarray);
+			Scanner sc2 = null;
+			try
+			{
+				sc2 = new Scanner(new File("config.txt"));
+			}
+			catch (FileNotFoundException e)
+			{
+			}
+			while (sc2.hasNext())
+			{
+				String[] array = sc2.nextLine().split(" ");
+				try {
 					FileSystem serverConnection = createConnection(array);
 					serverConnection.markDirty(title);
+				} catch (Exception e)
+				{
 				}
-				sc2.close();
 			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			sc2.close();
 		}
 		else
 		{
+
+			Scanner sc = null;
 			try
 			{
-				Scanner sc = new Scanner(new File("config.txt"));
-				while (sc.hasNext())
+				sc = new Scanner(new File("config.txt"));
+			}
+			catch (FileNotFoundException e)
+			{
+			}
+			while (sc.hasNext())
+			{
+				String[] array = sc.nextLine().split(" ");
+				FileSystem serverConnection = null;
+				try
 				{
-					String[] array = sc.nextLine().split(" ");
-					FileSystem serverConnection = createConnection(array);
+					serverConnection = createConnection(array);
 					if(serverConnection.hasFile(title))
 					{
 						FileWriter fileWriter = new FileWriter(new File(FILEPATH + '/' + title));
@@ -171,14 +205,13 @@ class FileSystemImpl extends FileSystemPOA
 						return true;
 					}
 				}
-				sc.close();
+				catch (Exception e)
+				{
+				}
 			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			sc.close();
 		}
-		return foundFile;
+		return true;
 	}
 
 	@Override
@@ -190,8 +223,15 @@ class FileSystemImpl extends FileSystemPOA
 			for(int i =0; i < results.size(); i++)
 			{
 				System.out.println("Marking" + title + "dirty");
-				openedReadFiles.remove(title);
+
 				String[] stringarray = {title, results.get(i)};
+				for(int j = 0; j < openedReadFiles.size(); j++)
+				{
+					if(openedReadFiles.get(j)[0].equals(title) && openedReadFiles.get(j)[1].equals(stringarray[1]))
+					{
+					openedReadFiles.remove(j);
+					}
+				}
 				openedDirtyFiles.add(stringarray);
 			}
 		}
@@ -213,9 +253,11 @@ class FileSystemImpl extends FileSystemPOA
 		String returnText = "File not open to read";
 		ArrayList<String> a = checkTitle(openedReadFiles, fileName);
 		ArrayList<String> b = checkTitle(openedDirtyFiles, fileName);
-		if(a.size() != 0||b.size() != 0)
+		ArrayList<String> c = checkTitle(openedWriteFiles, fileName);
+		if(a.size() != 0||b.size() != 0 || c.size() != 0)
 		{
 			a.addAll(b);
+			a.addAll(c);
 			for(int i = 0; i < a.size(); i++)
 			{
 				if(a.get(i).equals(userNum))
@@ -223,18 +265,17 @@ class FileSystemImpl extends FileSystemPOA
 					try
 					{
 						BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(FILEPATH + '/' + fileName)));
-						bufferedReader.skip(RECORDSIZE * recordNumber - 1);
-						String s = "";
-						while(s.length() < RECORDSIZE)
+
+						for(int j = 0; j < recordNumber; j++)
 						{
-							s = s + bufferedReader.readLine();
+							bufferedReader.readLine();
 						}
-						returnText = s.substring(0, RECORDSIZE);
+						returnText = bufferedReader.readLine().substring(0, RECORDSIZE);
+
 						bufferedReader.close();
 					}
 					catch (Exception e)
 					{
-						e.printStackTrace();
 					}
 				}
 			}
@@ -242,13 +283,11 @@ class FileSystemImpl extends FileSystemPOA
 		return returnText;
 	}
 
-	/**
-	 * TODO: Need to know about files sizes
-	 */
 	@Override
 	public String writeRecord(String fileName, int recordNumber, String record, String userNum)
 	{
-		ArrayList<String> a = checkTitle(openedReadFiles, fileName);
+		String outputText = "Record not written to file";
+		ArrayList<String> a = checkTitle(openedWriteFiles, fileName);
 		if(a.size()!= 0)
 		{
 			for(int i = 0; i < a.size(); i++)
@@ -257,27 +296,47 @@ class FileSystemImpl extends FileSystemPOA
 				{
 					try
 					{
-						BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(FILEPATH + '/' + fileName)));
-						bufferedReader.skip(RECORDSIZE * recordNumber - 1);
+						Scanner sc = new Scanner(new File(FILEPATH + '/' + fileName));
+						BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(FILEPATH + '/' +"newFile")));
 
-						BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(FILEPATH + '/' + fileName)));
-
-						String s = "";
-						while(s.length() < RECORDSIZE)
+						for(int j = 0; j < recordNumber; j++)
 						{
-							s = s + bufferedReader.readLine();
+							bufferedWriter.write(sc.nextLine()+ '\n');
+						}
+						if(record.length() > RECORDSIZE)
+						{
+							record = record.substring(0, RECORDSIZE);
+						}
+						else
+						{
+							while(record.length() < RECORDSIZE)
+							{
+								record = record + "~";
+							}
 						}
 
-						bufferedReader.close();
+						bufferedWriter.write(record+ '\n');
+						sc.nextLine();
+						while(sc.hasNext())
+						{
+							bufferedWriter.write(sc.nextLine()+ '\n');
+						}
+						outputText = "Record Written to File";
+						sc.close();
+						bufferedWriter.close();
+
+						File f1 = new File(FILEPATH + '/' +"newFile");
+						f1.renameTo(new File(FILEPATH + '/' + fileName));
+						f1.delete();
 					}
 					catch (Exception e)
 					{
-						e.printStackTrace();
+
 					}
 				}
 			}
 		}
-		return null;
+		return outputText;
 	}
 
 	/**
@@ -336,15 +395,15 @@ class FileSystemImpl extends FileSystemPOA
 		StringBuffer contents = new StringBuffer("");
 		for(String[] fileName : openedReadFiles)
 		{
-			contents.append(fileName[0] + "\n");
+			contents.append(fileName[0] + " is opened to read by: " + fileName[1] +"\n");
 		}
 		for(String[] fileName : openedWriteFiles)
 		{
-			contents.append(fileName[0] + "\n");
+			contents.append(fileName[0] + " is opened to write by: " + fileName[1] +"\n");
 		}
 		for(String[] fileName : openedDirtyFiles)
 		{
-			contents.append(fileName[0]+ "\n");
+			contents.append(fileName[0] + " is opened to dirty read by: " + fileName[1] +"\n");
 		}
 		return contents.toString();
 	}
