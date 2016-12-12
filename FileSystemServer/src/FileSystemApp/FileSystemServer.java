@@ -6,8 +6,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 
 import org.omg.CORBA.ORB;
@@ -27,7 +27,13 @@ class FileSystemImpl extends FileSystemPOA
 	private ArrayList<String[]> openedWriteFiles = new ArrayList<String[]>();
 	private ArrayList<String[]> openedDirtyFiles = new ArrayList<String[]>();
 
+	/**
+	 * Bonus Code
+	 */
+	private ArrayList<String[]> openedReadLatest = new ArrayList<String[]>();
+
 	private final String FILEPATH = "directory";
+	private final String latestRead = "latestRead/";
 	private final int RECORDSIZE = 60;
 
 	private int userNum = 0;
@@ -65,48 +71,8 @@ class FileSystemImpl extends FileSystemPOA
 	}
 
 	/**
-	 * TODO: This may work
+	 * check if a server has a file open to write
 	 */
-	@Override
-	public boolean openRead(String title , String userNum)
-	{
-		File file = new File(FILEPATH + '/' + title);
-		if(file.exists())
-		{
-			String[] stringarray = {title, userNum};
-			openedReadFiles.add(stringarray);
-			return true;
-		}
-		else
-		{
-			try
-			{
-				Scanner sc = new Scanner(new File("config.txt"));
-				while (sc.hasNext())
-				{
-					String[] array = sc.nextLine().split(" ");
-					FileSystem serverConnection = createConnection(array);
-					if(serverConnection.hasFile(title))
-					{
-						FileWriter fileWriter = new FileWriter(new File(FILEPATH + '/' + title));
-						fileWriter.append(serverConnection.readFile(title));
-						fileWriter.close();
-						String[] stringarray = {title, userNum};
-						openedReadFiles.add(stringarray);
-						sc.close();
-						return true;
-					}
-				}
-				sc.close();
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-		}
-		return false;
-	}
-
 	@Override
 	public boolean checkWrite(String title)
 	{
@@ -118,81 +84,175 @@ class FileSystemImpl extends FileSystemPOA
 		return booleanValue;
 	}
 
+	/**
+	 * open a file to read
+	 */
+	@Override
+	public boolean openRead(String title , String userNum)
+	{
+		boolean truth = false;
+		if(hasFile(title))
+		{
+			String[] stringarray = {title, userNum};
+			openedReadFiles.add(stringarray);
+			truth = true;
+		}
+		else
+		{
+			Scanner sc = null;
+			try
+			{
+				sc = new Scanner(new File("config.txt"));
+			}
+			catch (FileNotFoundException e1)
+			{
+			}
+
+			while (sc.hasNext() && !truth)
+			{
+				String[] array = sc.nextLine().split(" ");
+				FileSystem serverConnection;
+				try {
+					serverConnection = createConnection(array);
+
+					if(serverConnection.hasFile(title))
+					{
+						FileWriter fileWriter = new FileWriter(new File(FILEPATH + '/' + title));
+						fileWriter.append(serverConnection.readFile(title));
+						fileWriter.close();
+						String[] stringarray = {title, userNum};
+						openedReadFiles.add(stringarray);
+						truth = true;
+					}
+				}
+				catch (Exception e)
+				{
+					System.out.println("Could not find server: " + array[1]);
+				}
+			}
+			sc.close();
+		}
+		return truth;
+	}
+
+	/**
+	 * open a file to write
+	 */
 	@Override
 	public boolean openWrite(String title, String userNum)
 	{
-		boolean foundFile = false;
+		boolean truth = false;
 		if(hasFile(title))
 		{
+			Scanner sc = null;
 			try
 			{
-				Scanner sc = new Scanner(new File("config.txt"));
-				while (sc.hasNext())
-				{
-					String[] array = sc.nextLine().split(" ");
-					FileSystem serverConnection = createConnection(array);
+				sc = new Scanner(new File("config.txt"));
+			}
+			catch (FileNotFoundException e)
+			{
+			}
+
+			while (sc.hasNext())
+			{
+				String[] array = sc.nextLine().split(" ");
+				FileSystem serverConnection = null;
+				try {
+					serverConnection = createConnection(array);
+
 					if(!serverConnection.checkWrite(title))
 					{
 						return false;
 					}
 				}
-				sc.close();
-				String[] stringarray = {title, userNum};
-				openedWriteFiles.add(stringarray);
-				Scanner sc2 = new Scanner(new File("config.txt"));
-				while (sc.hasNext())
+				catch (Exception e)
 				{
-					String[] array = sc.nextLine().split(" ");
+				}
+			}
+			sc.close();
+			String[] stringarray = {title, userNum};
+			openedWriteFiles.add(stringarray);
+			truth = true;
+			Scanner sc2 = null;
+			try
+			{
+				sc2 = new Scanner(new File("config.txt"));
+			}
+			catch (FileNotFoundException e)
+			{
+			}
+			while (sc2.hasNext())
+			{
+				String[] array = sc2.nextLine().split(" ");
+				try {
 					FileSystem serverConnection = createConnection(array);
 					serverConnection.markDirty(title);
+				} catch (Exception e)
+				{
 				}
-				sc2.close();
 			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			sc2.close();
 		}
 		else
 		{
+
+			Scanner sc = null;
 			try
 			{
-				Scanner sc = new Scanner(new File("config.txt"));
-				while (sc.hasNext())
+				sc = new Scanner(new File("config.txt"));
+			}
+			catch (FileNotFoundException e)
+			{
+			}
+			while (sc.hasNext())
+			{
+				String[] array = sc.nextLine().split(" ");
+				FileSystem serverConnection = null;
+				try
 				{
-					String[] array = sc.nextLine().split(" ");
-					FileSystem serverConnection = createConnection(array);
+					serverConnection = createConnection(array);
 					if(serverConnection.hasFile(title))
 					{
 						FileWriter fileWriter = new FileWriter(new File(FILEPATH + '/' + title));
 						fileWriter.append(serverConnection.readFile(title));
 						fileWriter.close();
 						openWrite(title, userNum);
-						return true;
+						truth = true;
 					}
 				}
-				sc.close();
+				catch (Exception e)
+				{
+				}
 			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			sc.close();
 		}
-		return foundFile;
+		return truth;
 	}
 
+	/**
+	 * Marks any users that have the file open to read
+	 */
 	@Override
 	public boolean markDirty(String title)
 	{
+		boolean truth = false;
 		ArrayList<String> results = checkTitle(openedReadFiles,title);
 		if(results.size() != 0)
 		{
 			for(int i =0; i < results.size(); i++)
 			{
 				System.out.println("Marking" + title + "dirty");
-				openedReadFiles.remove(title);
+
 				String[] stringarray = {title, results.get(i)};
+				for(int j = 0; j < openedReadFiles.size(); j++)
+				{
+					if(openedReadFiles.get(j)[0].equals(title) && openedReadFiles.get(j)[1].equals(stringarray[1]))
+					{
+					openedReadFiles.remove(j);
+					}
+				}
 				openedDirtyFiles.add(stringarray);
+				truth = true;
 			}
 		}
 		else if(checkTitle(openedWriteFiles, title).size() != 0)
@@ -204,37 +264,54 @@ class FileSystemImpl extends FileSystemPOA
 			File file = new File(FILEPATH + '/' + title);
 			file.delete();
 		}
-		return true;
+		return truth;
 	}
 
+	/**
+	 * reads a record from the inputed file, at the record number position
+	 */
 	@Override
 	public String readRecord(String fileName, int recordNumber, String userNum)
 	{
 		String returnText = "File not open to read";
+		String latestReadAddition = "";
 		ArrayList<String> a = checkTitle(openedReadFiles, fileName);
 		ArrayList<String> b = checkTitle(openedDirtyFiles, fileName);
-		if(a.size() != 0||b.size() != 0)
+		ArrayList<String> c = checkTitle(openedWriteFiles, fileName);
+		ArrayList<String> d = checkTitle(openedReadLatest, fileName);
+
+		if(d.size() != 0)
+		{
+			for(int i = 0; i < d.size(); i++)
+			{
+				latestReadAddition = latestRead;
+				notifyReadLatest(fileName);
+			}
+		}
+
+		if(a.size() != 0||b.size() != 0 || c.size() != 0 || d.size() != 0)
 		{
 			a.addAll(b);
+			a.addAll(c);
+			a.addAll(d);
 			for(int i = 0; i < a.size(); i++)
 			{
 				if(a.get(i).equals(userNum))
 				{
 					try
 					{
-						BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(FILEPATH + '/' + fileName)));
-						bufferedReader.skip(RECORDSIZE * recordNumber - 1);
-						String s = "";
-						while(s.length() < RECORDSIZE)
+						BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(FILEPATH + '/' + latestReadAddition + fileName)));
+
+						for(int j = 0; j < recordNumber; j++)
 						{
-							s = s + bufferedReader.readLine();
+							bufferedReader.readLine();
 						}
-						returnText = s.substring(0, RECORDSIZE);
+						returnText = bufferedReader.readLine().substring(0, RECORDSIZE);
+
 						bufferedReader.close();
 					}
 					catch (Exception e)
 					{
-						e.printStackTrace();
 					}
 				}
 			}
@@ -243,12 +320,13 @@ class FileSystemImpl extends FileSystemPOA
 	}
 
 	/**
-	 * TODO: Need to know about files sizes
+	 * write a record a file name inputed, at the record number inputed
 	 */
 	@Override
 	public String writeRecord(String fileName, int recordNumber, String record, String userNum)
 	{
-		ArrayList<String> a = checkTitle(openedReadFiles, fileName);
+		String outputText = "Record not written to file";
+		ArrayList<String> a = checkTitle(openedWriteFiles, fileName);
 		if(a.size()!= 0)
 		{
 			for(int i = 0; i < a.size(); i++)
@@ -257,27 +335,47 @@ class FileSystemImpl extends FileSystemPOA
 				{
 					try
 					{
-						BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(FILEPATH + '/' + fileName)));
-						bufferedReader.skip(RECORDSIZE * recordNumber - 1);
+						Scanner sc = new Scanner(new File(FILEPATH + '/' + fileName));
+						BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(FILEPATH + '/' +"newFile")));
 
-						BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(FILEPATH + '/' + fileName)));
-
-						String s = "";
-						while(s.length() < RECORDSIZE)
+						for(int j = 0; j < recordNumber; j++)
 						{
-							s = s + bufferedReader.readLine();
+							bufferedWriter.write(sc.nextLine()+ '\n');
+						}
+						if(record.length() > RECORDSIZE)
+						{
+							record = record.substring(0, RECORDSIZE);
+						}
+						else
+						{
+							while(record.length() < RECORDSIZE)
+							{
+								record = record + "~";
+							}
 						}
 
-						bufferedReader.close();
+						bufferedWriter.write(record+ '\n');
+						sc.nextLine();
+						while(sc.hasNext())
+						{
+							bufferedWriter.write(sc.nextLine()+ '\n');
+						}
+						outputText = "Record Written to File";
+						sc.close();
+						bufferedWriter.close();
+
+						File f1 = new File(FILEPATH + '/' +"newFile");
+						f1.renameTo(new File(FILEPATH + '/' + fileName));
+						f1.delete();
 					}
 					catch (Exception e)
 					{
-						e.printStackTrace();
+
 					}
 				}
 			}
 		}
-		return null;
+		return outputText;
 	}
 
 	/**
@@ -287,6 +385,7 @@ class FileSystemImpl extends FileSystemPOA
 	public boolean closeFile(String fileName, String userNum)
 	{
 		boolean sendValue = false;
+		boolean delete = true;
 		for(int i = 0; i < openedReadFiles.size(); i++)
 		{
 			if(openedReadFiles.get(i)[0].equals(fileName) && openedReadFiles.get(i)[1].equals(userNum))
@@ -297,23 +396,77 @@ class FileSystemImpl extends FileSystemPOA
 		}
 		for(int i = 0; i < openedWriteFiles.size(); i++)
 		{
-			if(openedWriteFiles.get(i)[0].equals(fileName) && openedWriteFiles.get(i)[1].equals(userNum))
+			if(openedWriteFiles.get(i)[0].equals(fileName))
 			{
-				openedWriteFiles.remove(i);
-				sendValue = true;
+				delete = false;
+				if(openedWriteFiles.get(i)[1].equals(userNum))
+				{
+					Scanner sc = null;
+					try
+					{
+						sc = new Scanner(new File("config.txt"));
+					}
+					catch (FileNotFoundException e1)
+					{
+					}
+
+					while (sc.hasNext())
+					{
+						String[] array = sc.nextLine().split(" ");
+						FileSystem serverConnection;
+						try {
+							serverConnection = createConnection(array);
+
+							if(serverConnection.checkWrite(fileName))
+							{
+								serverConnection.notifyReadLatest(fileName);
+							}
+						}
+						catch (Exception e)
+						{
+							System.out.println("Could not find server: " + array[1]);
+						}
+					}
+					sc.close();
+
+					openedWriteFiles.remove(i);
+					sendValue = true;
+				}
 			}
 		}
 		for(int i = 0; i < openedDirtyFiles.size(); i++)
 		{
 			if(openedDirtyFiles.get(i)[0].equals(fileName) && openedDirtyFiles.get(i)[1].equals(userNum))
 			{
+				if(delete)
+				{
+					File file = new File(FILEPATH + '/' + fileName);
+					file.delete();
+				}
 				openedDirtyFiles.remove(i);
+				sendValue = true;
+			}
+		}
+
+		for(int i = 0; i < openedReadLatest.size(); i++)
+		{
+			if(openedReadLatest.get(i)[0].equals(fileName) && openedReadLatest.get(i)[1].equals(userNum))
+			{
+				openedReadLatest.remove(i);
+				if((checkTitle(openedReadLatest, fileName).size() == 0))
+				{
+					File file = new File(FILEPATH + '/' + latestRead + fileName);
+					file.delete();
+				}
 				sendValue = true;
 			}
 		}
 		return sendValue;
 	}
 
+	/**
+	 * list all files saved locally
+	 */
 	@Override
 	public String listFiles()
 	{
@@ -330,25 +483,35 @@ class FileSystemImpl extends FileSystemPOA
 		return contents.toString();
 	}
 
+	/**
+	 * lists all of the open files
+	 */
 	@Override
 	public String listOpenFiles()
 	{
 		StringBuffer contents = new StringBuffer("");
 		for(String[] fileName : openedReadFiles)
 		{
-			contents.append(fileName[0] + "\n");
+			contents.append(fileName[0] + " is opened to read by: " + fileName[1] +"\n");
 		}
 		for(String[] fileName : openedWriteFiles)
 		{
-			contents.append(fileName[0] + "\n");
+			contents.append(fileName[0] + " is opened to write by: " + fileName[1] +"\n");
 		}
 		for(String[] fileName : openedDirtyFiles)
 		{
-			contents.append(fileName[0]+ "\n");
+			contents.append(fileName[0] + " is opened to dirty read by: " + fileName[1] +"\n");
+		}
+		for(String[] fileName : openedReadLatest)
+		{
+			contents.append(fileName[0] + " is opened to read latest by: " + fileName[1] +"\n");
 		}
 		return contents.toString();
 	}
 
+	/**
+	 * reads a file from local system with the inputed file name
+	 */
 	@Override
 	public String readFile(String title)
 	{
@@ -370,7 +533,15 @@ class FileSystemImpl extends FileSystemPOA
 		return null;
 	}
 
-
+	/**
+	 * creates a connection to a database
+	 * @param args
+	 * @return
+	 * @throws InvalidName
+	 * @throws NotFound
+	 * @throws CannotProceed
+	 * @throws org.omg.CosNaming.NamingContextPackage.InvalidName
+	 */
 	private FileSystem createConnection(String[] args) throws InvalidName, NotFound, CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName
 	{
 	ORB orb = ORB.init(args, null);
@@ -404,6 +575,140 @@ class FileSystemImpl extends FileSystemPOA
 		}
 		return array;
 	}
+
+	/**
+	 * NOTE BONUS READ LATEST CODE
+	 */
+	/**
+	 * Opens the file to be allowed to read latest
+	 * @param fileName
+	 * @param userNum
+	 * @return if the file was opened
+	 */
+	@Override
+	public boolean openReadLatest(String fileName, String userNum)
+	{
+		boolean truth = false;
+		if(hasFile(fileName))
+		{
+			String[] stringarray = {fileName, userNum};
+			openedReadLatest.add(stringarray);
+			BufferedWriter filewriter = null;
+			Scanner file = null;
+			try {
+				filewriter = new BufferedWriter(new FileWriter(new File(FILEPATH + '/' + latestRead + fileName)));
+				file = new Scanner(new File(FILEPATH + '/' + fileName));
+
+				while(file.hasNext())
+				{
+					filewriter.write((file.nextLine()+"\n"));
+				}
+				file.close();
+				filewriter.close();
+			}
+			catch (IOException e)
+			{
+			}
+
+			truth = true;
+		}
+		else
+		{
+			Scanner sc = null;
+			try
+			{
+				sc = new Scanner(new File("config.txt"));
+			}
+			catch (FileNotFoundException e1)
+			{
+			}
+
+			while (sc.hasNext() && !truth)
+			{
+				String[] array = sc.nextLine().split(" ");
+				FileSystem serverConnection;
+				try {
+					serverConnection = createConnection(array);
+
+					if(serverConnection.hasFile(fileName) || !serverConnection.checkWrite(fileName))
+					{
+						FileWriter fileWriter = new FileWriter(new File(FILEPATH + '/' + latestRead + fileName));
+						fileWriter.append(serverConnection.readFile(fileName) + "\n");
+						fileWriter.close();
+						String[] stringarray = {fileName, userNum};
+						openedReadFiles.add(stringarray);
+						truth = true;
+					}
+				}
+				catch (Exception e)
+				{
+					System.out.println("Could not find server: " + array[1]);
+				}
+			}
+			sc.close();
+		}
+		return truth;
+	}
+
+	/**
+	 * Notifies that something has changed in the inputed file
+	 * @param fileName of the file that changed
+	 * @return
+	 */
+	@Override
+	public boolean notifyReadLatest(String fileName)
+	{
+		boolean readFile = false;
+		if(checkTitle(openedReadLatest ,fileName).size() != 0)
+		{
+			readFile = true;
+
+			Scanner sc = null;
+				try
+				{
+					sc = new Scanner(new File("config.txt"));
+				}
+				catch (FileNotFoundException e1)
+				{
+				}
+
+				while (sc.hasNext())
+				{
+					String[] array = sc.nextLine().split(" ");
+					FileSystem serverConnection;
+					try {
+						serverConnection = createConnection(array);
+						System.out.println(serverConnection);
+
+
+						if(serverConnection.checkWrite(fileName) && !serverConnection.hasFile(fileName))
+						{
+							String string = serverConnection.readFile(fileName);
+
+							if(!string.equals(""));
+							{
+								FileWriter fileWriter = new FileWriter(new File(FILEPATH + '/' + latestRead + fileName));
+								fileWriter.append(serverConnection.readFile(fileName));
+								fileWriter.close();
+							}
+						}
+					}
+					catch (Exception e)
+					{
+						System.out.println("Could not find server: " + array[1]);
+					}
+				}
+				sc.close();
+
+		}
+
+		return readFile;
+	}
+
+
+	/**
+	 * END BONUS CODE
+	 */
 }
 
 /**

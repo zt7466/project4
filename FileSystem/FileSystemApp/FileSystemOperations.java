@@ -93,5 +93,19 @@ public interface FileSystemOperations
 	 */
 	boolean checkWrite(String title);
 
+	/**
+	 * Method for adding the file to the list of files opened to readLatest
+	 * @param fileName
+	 * @param userNum
+	 * @return
+	 */
+	boolean openReadLatest(String fileName, String userNum);
+
+	/**
+	 * Method for reading the lastest version of a file
+	 * @param fileName
+	 * @return
+	 */
+	boolean notifyReadLatest(String fileName);
 
 }

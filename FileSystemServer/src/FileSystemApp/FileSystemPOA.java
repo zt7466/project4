@@ -28,6 +28,8 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		_methods.put("writeRecord", new java.lang.Integer(10));
 		_methods.put("markDirty", new java.lang.Integer(11));
 		_methods.put("checkWrite", new java.lang.Integer(12));
+		_methods.put("openReadLatest", new java.lang.Integer(13));
+		_methods.put("notifyReadLatest", new java.lang.Integer(14));
 	}
 
 	/**
@@ -218,6 +220,35 @@ public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 			out.write_boolean($result);
 			break;
 		}
+
+		/**
+		 * Opens a files to read latest access
+		 */
+		case 13:
+		{
+			String fileTitle = in.read_string();
+			String userNum = in.read_string();
+			System.out.println("Opening file to read latest access: " + fileTitle);
+			boolean $result = false;
+			$result = this.openReadLatest(fileTitle, userNum);
+			out = $rh.createReply();
+			out.write_boolean($result);
+			break;
+		}
+
+		/**
+		 * Notify the method that a files may has changed
+		 */
+		case 14:
+		{
+			String fileTitle = in.read_string();
+			boolean $result = false;
+			$result = this.notifyReadLatest(fileTitle);
+			out = $rh.createReply();
+			out.write_boolean($result);
+			break;
+		}
+
 		default:
 			throw new org.omg.CORBA.BAD_OPERATION(0, org.omg.CORBA.CompletionStatus.COMPLETED_MAYBE);
 		}

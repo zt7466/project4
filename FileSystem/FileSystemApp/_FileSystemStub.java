@@ -389,5 +389,54 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 		}
 	}
 
+	@Override
+	public boolean openReadLatest(String fileName, String userNum) {
+		org.omg.CORBA.portable.InputStream $in = null;
+		try
+		{
+			org.omg.CORBA.portable.OutputStream $out = _request("openReadLatest", true);
+			$out.write_string(fileName);
+			$out.write_string(userNum);
+			$in = _invoke($out);
+			boolean $result = $in.read_boolean();
+			return $result;
+		} catch (org.omg.CORBA.portable.ApplicationException $ex)
+		{
+			$in = $ex.getInputStream();
+			String _id = $ex.getId();
+			throw new org.omg.CORBA.MARSHAL(_id);
+		} catch (org.omg.CORBA.portable.RemarshalException $rm)
+		{
+			 return openReadLatest(fileName, userNum);
+		} finally
+		{
+			_releaseReply($in);
+		}
+	}
+
+	@Override
+	public boolean notifyReadLatest(String fileName)
+	{
+		org.omg.CORBA.portable.InputStream $in = null;
+		try
+		{
+			org.omg.CORBA.portable.OutputStream $out = _request("notifyReadLatest", true);
+			$out.write_string(fileName);
+			$in = _invoke($out);
+			boolean $result = $in.read_boolean();
+			return $result;
+		} catch (org.omg.CORBA.portable.ApplicationException $ex)
+		{
+			$in = $ex.getInputStream();
+			String _id = $ex.getId();
+			throw new org.omg.CORBA.MARSHAL(_id);
+		} catch (org.omg.CORBA.portable.RemarshalException $rm)
+		{
+			 return notifyReadLatest(fileName);
+		} finally
+		{
+			_releaseReply($in);
+		}
+	}
 
 }
