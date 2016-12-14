@@ -41,6 +41,7 @@ public interface FileSystemOperations
 	/**
 	 * opens a file to read
 	 * @param title of file to open
+	 * @param userNum
 	 * @return true or false if the file was opened
 	 */
 	public boolean openRead(String title , String userNum);
@@ -48,6 +49,7 @@ public interface FileSystemOperations
 	/**
 	 *opens a file to write
 	 * @param title of the file to open
+	 * @param userNum
 	 * @return t/f if the file was opened
 	 */
 	public boolean openWrite(String title, String userNum);
@@ -56,6 +58,7 @@ public interface FileSystemOperations
 	 * reads a given record from a given file
 	 * @param fileName to pull the record from
 	 * @param recordNumber to pull from the file
+	 * @param userNum
 	 * @return the record pulled from the file
 	 */
 	public String readRecord(String fileName, int recordNumber, String userNum);
@@ -65,12 +68,16 @@ public interface FileSystemOperations
 	 * @param fileName the file to add the record to
 	 * @param recordNumber the place the record is to be placed
 	 * @param record the record to add
+	 * @param userNum
+	 * @return if the record was written to the server
 	 */
 	public String writeRecord(String fileName, int recordNumber, String record, String userNum);
 
 	/**
 	 * close a file weather it is opened to read or write
 	 * @param fileName
+	 * @param userNum
+	 * @return if the file was closed
 	 */
 	public boolean closeFile(String fileName, String userNum);
 
@@ -83,15 +90,37 @@ public interface FileSystemOperations
 	/**
 	 * Marks a file as dirty if it is opened to read when someone opens it to write
 	 * @param title to make dirty
+	 * @return if the file was marked dirty
 	 */
 	boolean markDirty(String title);
 
 	/**
 	 * checks if the file should be deleted
 	 * @param title
-	 * @return
+	 * @return check if the server has a file open for write
 	 */
 	boolean checkWrite(String title);
 
+	/**
+	 * Method for adding the file to the list of files opened to readLatest
+	 * @param fileName
+	 * @param userNum
+	 * @return if the file was open
+	 */
+	boolean openReadLatest(String fileName, String userNum);
+
+	/**
+	 * Method for reading the lastest version of a file
+	 * @param fileName
+	 * @return read new
+	 */
+	boolean notifyReadLatest(String fileName);
+
+	/**
+	 * checks the file is open for read latest
+	 * @param fileName
+	 * @return boolean if server has it open to read latest
+	 */
+	public boolean checkReadLatest(String fileName);
 
 }
