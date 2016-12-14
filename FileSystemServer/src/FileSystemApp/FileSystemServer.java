@@ -457,6 +457,7 @@ class FileSystemImpl extends FileSystemPOA
 	public boolean closeFile(String fileName, String userNum)
 	{
 		boolean sendValue = false;
+		boolean delete = true;
 		for(int i = 0; i < openedReadFiles.size(); i++)
 		{
 			if(openedReadFiles.get(i)[0].equals(fileName) && openedReadFiles.get(i)[1].equals(userNum))
@@ -467,7 +468,7 @@ class FileSystemImpl extends FileSystemPOA
 		}
 		for(int i = 0; i < openedWriteFiles.size(); i++)
 		{
-			if(openedWriteFiles.get(i)[0].equals(fileName) && openedWriteFiles.get(i)[1].equals(userNum))
+			if(openedWriteFiles.get(i)[0].equals(fileName))
 			{
 				Scanner sc = null;
 				try
@@ -508,6 +509,11 @@ class FileSystemImpl extends FileSystemPOA
 		{
 			if(openedDirtyFiles.get(i)[0].equals(fileName) && openedDirtyFiles.get(i)[1].equals(userNum))
 			{
+				if(delete)
+				{
+					File file = new File(FILEPATH + '/' + fileName);
+					file.delete();
+				}
 				openedDirtyFiles.remove(i);
 				sendValue = true;
 

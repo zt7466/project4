@@ -1,1 +1,3 @@
--ORBInitialHost clipper -ORBInitialPort 1050
+-ORBInitialHost 52.23.242.80 -ORBInitialPort 1050
+-ORBInitialHost 54.91.209.99 -ORBInitialPort 1050
+-ORBInitialHost 54.164.211.108 -ORBInitialPort 1050
