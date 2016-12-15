@@ -66,6 +66,9 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 	}
 
 
+	/**
+	 * method for if the server has the file open to copy
+	 */
 	public boolean hasFile(String title)
 	{
 		org.omg.CORBA.portable.InputStream $in = null;
@@ -90,6 +93,9 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 		}
 	}
 
+	/**
+	 * checks a file is opened to write
+	 */
 	@Override
 	public boolean checkWrite(String title)
 	{
@@ -116,7 +122,9 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 	}
 
 
-
+	/**
+	 * lists all open files
+	 */
 	@Override
 	public String listFiles()
 	{
@@ -141,6 +149,9 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 		}
 	}
 
+	/**
+	 * opens a file to read
+	 */
 	@Override
 	public boolean openRead(String title, String userNum)
 	{
@@ -167,6 +178,9 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 		}
 	}
 
+	/**
+	 * opens a file to write
+	 */
 	@Override
 	public boolean openWrite(String title, String userNum)
 	{
@@ -193,6 +207,9 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 		}
 	}
 
+	/**
+	 * marks a file as being opened to dirty to read
+	 */
 	public boolean markDirty(String fileName)
 	{
 		org.omg.CORBA.portable.InputStream $in = null;
@@ -217,6 +234,9 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 		}
 	}
 
+	/**
+	 * list all open files
+	 */
 	@Override
 	public String listOpenFiles()
 	{
@@ -241,6 +261,9 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 		}
 	}
 
+	/**
+	 * closes a file 
+	 */
 	public boolean closeFile(String fileName, String userNum)
 	{
 		org.omg.CORBA.portable.InputStream $in = null;
@@ -266,6 +289,9 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 		}
 	}
 
+	/**
+	 * read a record from an open file
+	 */
 	public String readRecord(String fileName, int recordNumber, String userNum)
 	{
 		org.omg.CORBA.portable.InputStream $in = null;
@@ -292,6 +318,9 @@ public class _FileSystemStub extends org.omg.CORBA.portable.ObjectImpl implement
 		}
 	}
 
+	/**
+	 * writes a record to a file
+	 */
 	public String writeRecord(String fileName, int recordNumber, String record, String userNum)
 	{
 		org.omg.CORBA.portable.InputStream $in = null;

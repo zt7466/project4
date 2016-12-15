@@ -6,6 +6,11 @@ package FileSystemApp;
  * 2:45:54 PM EST
  */
 
+/**
+ * server side stubs.
+ * @author Merlin, Scott, Ryan, Zach
+ *
+ */
 public abstract class FileSystemPOA extends org.omg.PortableServer.Servant
 		implements FileSystemApp.FileSystemOperations, org.omg.CORBA.portable.InvokeHandler
 {

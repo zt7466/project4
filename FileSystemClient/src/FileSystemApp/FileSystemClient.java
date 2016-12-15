@@ -7,8 +7,8 @@ import java.util.Scanner;
 import org.omg.CORBA.*;
 
 /**
- * A simple client that just gets a
- * @author Merlin
+ * A simple client that connects to a server and handels user input
+ * @author Merlin, Scott, Ryan, Zach
  *
  */
 public class FileSystemClient
@@ -16,13 +16,16 @@ public class FileSystemClient
 	static FileSystem fileSystemImpl;
 
 	/**
-	 * Just do each operation once
-	 * @param args ignored
+	 * Runs the client
+	 * @param args takes inputed need to connect to the server 
 	 */
 	public static void main(String args[])
 	{
 		try
 		{
+			/**
+			 * MERLIN's
+			 */
 			// create and initialize the ORB
 			ORB orb = ORB.init(args, null);
 
@@ -38,7 +41,10 @@ public class FileSystemClient
 
 			System.out.println("Obtained a handle on server object: " + fileSystemImpl);
 			String userData = fileSystemImpl.sayHello();
-
+			/**
+			 * END MERLIN's
+			 */
+			
 			Scanner sc = new Scanner(System.in);
 			String inputst = "";
 			while(!inputst.equals("-1"))
@@ -46,22 +52,34 @@ public class FileSystemClient
 				System.out.print("Input Command (keywords prints commands):");
 				inputst = sc.next();
 
+				/**
+				 * opens a file
+				 */
 				if(inputst.toLowerCase().equals("open"))
 				{
 					System.out.print("write, read, or readLatest:");
 					String inputst2 = sc.next();
+					/**
+					 * opens a file to read
+					 */
 					if(inputst2.toLowerCase().equals("read"))
 					{
 						System.out.print("Enter the name of the file you want to open to read:");
 						String fileName = sc.next();
 						System.out.println(fileSystemImpl.openRead(fileName, userData));
 					}
+					/**
+					 * opens a file to write
+					 */
 					else if(inputst2.toLowerCase().equals("write"))
 					{
 						System.out.print("Enter the name of the file you want to open to write:");
 						String fileName = sc.next();
 						System.out.println(fileSystemImpl.openWrite(fileName, userData));
 					}
+					/**
+					 * opens a file to read latest
+					 */
 					else if(inputst2.toLowerCase().equals("readlatest"))
 					{
 						System.out.print("Enter the name of the file you want to open to write:");
@@ -73,6 +91,7 @@ public class FileSystemClient
 						System.out.println("Not valid input:");
 					}
 				}
+				// reads a record from an entered file
 				else if(inputst.toLowerCase().equals("read"))
 				{
 					System.out.print("Enter the name of the file you want to read from:");
@@ -82,6 +101,7 @@ public class FileSystemClient
 					int recordNumber = sc.nextInt();
 					System.out.println(fileSystemImpl.readRecord(fileName, recordNumber, userData));
 				}
+				// Writes a record to the file
 				else if(inputst.toLowerCase().equals("write"))
 				{
 					System.out.print("Enter the name of the file you want to write to:");
@@ -96,6 +116,7 @@ public class FileSystemClient
 
 					System.out.println(fileSystemImpl.writeRecord(fileName, recordNumber, record, userData));
 				}
+				//Closes the file on the server
 				else if(inputst.toLowerCase().equals("close"))
 				{
 					System.out.print("Enter the name of the file you want to close:");
@@ -108,10 +129,12 @@ public class FileSystemClient
 					System.out.print("list all or open files:");
 					String inputst2 = sc.next();
 					System.out.println();
+					//Lists all the files on local
 					if(inputst2.toLowerCase().equals("all"))
 					{
 						System.out.println(fileSystemImpl.listFiles());
 					}
+					//Lists all open files on local
 					else if(inputst2.toLowerCase().equals("open"))
 					{
 						System.out.println(fileSystemImpl.listOpenFiles());
@@ -121,6 +144,7 @@ public class FileSystemClient
 						System.out.println("Not valid input:");
 					}
 				}
+				//Print possible commands
 				else if(inputst.toLowerCase().equals("keywords"))
 				{
 					System.out.println("useable keywords: open, read, write, close, list");
@@ -129,12 +153,6 @@ public class FileSystemClient
 				{
 					System.out.println("Not valid input:");
 				}
-//	//			System.out.println(fileSystemImpl.hasFile("test4.txt"));
-//				fileSystemImpl.openRead("test3.txt", userData);
-//				//System.out.println(fileSystemImpl.writeRecord("test2.txt", 3, "abcde12345", userData));
-//				System.out.println(fileSystemImpl.readRecord("test3.txt", 3, userData));
-//				System.out.println(fileSystemImpl.closeFile("test3.txt", userData));
-
 			}
 			sc.close();
 		} catch (Exception e)
